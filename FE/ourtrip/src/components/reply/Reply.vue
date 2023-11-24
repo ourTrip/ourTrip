@@ -1,14 +1,14 @@
 <script setup>
-import axios from 'axios';
-import { storeToRefs } from 'pinia';
-import { ref, onMounted } from 'vue';
-import { useMemberStore } from '@/stores/user';
+import axios from "axios";
+import { storeToRefs } from "pinia";
+import { ref, onMounted } from "vue";
+import { useMemberStore } from "@/stores/user";
 
-import ReplyBlock from '../../components/reply/item/ReplyBlock.vue';
+import ReplyBlock from "../../components/reply/item/ReplyBlock.vue";
 
 const { VITE_APP_SERVER_URI } = import.meta.env;
 const props = defineProps({ listNo: String });
-const replyContent = ref('');
+const replyContent = ref("");
 const replys = ref([]);
 
 const memberStore = useMemberStore();
@@ -18,20 +18,28 @@ const { userInfo } = storeToRefs(memberStore);
 onMounted(async () => {
   fetch();
   await getReply();
+  scrollDown();
 });
 
 const fetch = async () => {
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem("accessToken");
   await getUserInfo(accessToken !== null ? accessToken : null);
 };
 
 const scrollDown = async () => {
-  const mySpace = document.getElementById('main_container');
+  const mySpace = document.getElementById("main_container");
   mySpace.scrollTop = mySpace.scrollHeight;
 };
 
 const displayedAt = (item) => {
-  const createdAt = new Date(item[0], item[1] - 1, item[2], item[3] || 0, item[4] || 0, item[5] || 0);
+  const createdAt = new Date(
+    item[0],
+    item[1] - 1,
+    item[2],
+    item[3] || 0,
+    item[4] || 0,
+    item[5] || 0
+  );
   const milliSeconds = new Date() - createdAt;
   const seconds = milliSeconds / 1000;
   if (seconds < 60) return `방금 전`;
@@ -52,7 +60,7 @@ const displayedAt = (item) => {
 const getReply = async () => {
   const url = `${VITE_APP_SERVER_URI}/reply/getReply`;
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   const data = {
@@ -64,14 +72,12 @@ const getReply = async () => {
   replys.value = response.data.list.map((item) => {
     return { ...item, reply_computed: displayedAt(item.reply_datetime) };
   });
-
-  scrollDown();
 };
 
 const addReplyHandler = async () => {
   const url = `${VITE_APP_SERVER_URI}/reply/regist`;
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   const data = {
@@ -81,7 +87,7 @@ const addReplyHandler = async () => {
   };
 
   if (replyContent.value === null) {
-    alert('댓글을 입력해주세요😀');
+    alert("댓글을 입력해주세요😀");
   } else {
     await axios.post(url, data, headers);
     replyContent.value = null;
