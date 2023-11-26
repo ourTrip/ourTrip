@@ -40,8 +40,13 @@ const isFindOurShare = ref(true);
 const isShare = ref(false);
 const isModifyMode = ref(false);
 
-onMounted(() => {
+function sleep(sec) {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
+onMounted(async () => {
   getListDetail();
+  await sleep(1);
   getPlaceList();
   findOur();
 });

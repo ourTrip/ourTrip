@@ -52,8 +52,13 @@ const nextButtonHandler = () => {
   }
 };
 
-onMounted(() => {
+function sleep(sec) {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
+onMounted(async () => {
   if (listInfo.value.list_places !== undefined) {
+    await sleep(1);
     selectList.value = listInfo.value.list_places;
   }
 });
